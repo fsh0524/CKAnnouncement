@@ -8,6 +8,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.TextView;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 
 public class MainActivity extends ActionBarActivity
@@ -36,6 +44,31 @@ public class MainActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+
+        /**
+         * Making String Request.
+         */
+        RequestQueue queue = Volley.newRequestQueue(this);
+        final TextView mTextView = (TextView) findViewById(R.id.bkMsg);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET,"http://www.google.com",new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                mTextView.setText("Response is: "+ response.substring(0,300));
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError arg0) {
+                mTextView.setText("Error Response");
+            }
+        });
+
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
     }
 
     @Override
@@ -46,12 +79,15 @@ public class MainActivity extends ActionBarActivity
         switch (position) {
             case 0:
                 objFragment = new FragmentMain();
+                mTitle = getString(R.string.title_section1);
                 break;
             case 1:
                 objFragment = new FragmentAnn();
+                mTitle = getString(R.string.title_section2);
                 break;
             case 2:
                 objFragment = new FragmentLogin();
+                mTitle = getString(R.string.title_section3);
                 break;
         }
 
@@ -60,20 +96,6 @@ public class MainActivity extends ActionBarActivity
         fragmentManager.beginTransaction()
                 .replace(R.id.container, objFragment)
                 .commit();
-    }
-
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
-                break;
-        }
     }
 
     public void restoreActionBar() {
