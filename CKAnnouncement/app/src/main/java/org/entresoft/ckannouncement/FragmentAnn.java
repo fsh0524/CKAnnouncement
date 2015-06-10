@@ -1,5 +1,6 @@
 package org.entresoft.ckannouncement;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
 import java.util.ArrayList;
 
 public class FragmentAnn extends Fragment {
@@ -51,11 +53,16 @@ public class FragmentAnn extends Fragment {
         // Refresh
         mListView.setAdapter(listAdapter);
 
+        final ProgressDialog mDialog = new ProgressDialog(getActivity()) ;
+        mDialog.setIndeterminateDrawable(getActivity().getResources().getDrawable(R.drawable.suika_loading));
+        mDialog.setMessage("少女祈禱中...");
+        mDialog.show();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://twcl.ck.tp.edu.tw/api/announce", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        mDialog.dismiss();
                         try {
                             JSONArray jArray = response.getJSONArray("anns");
                             for (int i = 0 ; i < jArray.length() ; i++) {
@@ -72,6 +79,7 @@ public class FragmentAnn extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mDialog.dismiss();
                 annList.add("Request ERROR");
             }
         });
