@@ -3,6 +3,7 @@ package org.entresoft.ckannouncement;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,9 +45,9 @@ public class FragmentAnn extends Fragment {
          * Making Request.
          */
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        ListView mListView = (ListView) getActivity().findViewById(R.id.annListView);
+        final ListView mListView = (ListView) getActivity().findViewById(R.id.annListView);
         final ArrayList<String> annList = new ArrayList<String>();
-        ArrayAdapter<String> listAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, annList);
+        final ArrayAdapter<String> listAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, annList);
         // Refresh
         mListView.setAdapter(listAdapter);
 
@@ -59,6 +60,8 @@ public class FragmentAnn extends Fragment {
                             JSONArray jArray = response.getJSONArray("anns");
                             for (int i = 0 ; i < jArray.length() ; i++) {
                                 annList.add(jArray.getJSONObject(i).getString("title"));
+                                Log.d("TAG", "jizzzzzzzzzz" + i);
+                                mListView.setAdapter(listAdapter);
                                 // Pulling items from the array
                             }
 
@@ -75,7 +78,7 @@ public class FragmentAnn extends Fragment {
 
         // Add the request to the RequestQueue.
         queue.add(jsonObjectRequest);
-        mListView.setAdapter(listAdapter);
+
 
     }
 }
