@@ -10,17 +10,17 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class FragmentAnn extends Fragment {
 
@@ -45,7 +45,7 @@ public class FragmentAnn extends Fragment {
          */
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         ListView mListView = (ListView) getActivity().findViewById(R.id.annListView);
-        final String[] annList = {};
+        final ArrayList<String> annList = new ArrayList<String>();
         ArrayAdapter<String> listAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, annList);
         // Refresh
         mListView.setAdapter(listAdapter);
@@ -58,7 +58,7 @@ public class FragmentAnn extends Fragment {
                         try {
                             JSONArray jArray = response.getJSONArray("anns");
                             for (int i = 0 ; i < jArray.length() ; i++) {
-                                annList[i] = jArray.getJSONObject(i).toString();
+                                annList.add(jArray.getJSONObject(i).getString("title"));
                                 // Pulling items from the array
                             }
 
@@ -69,7 +69,7 @@ public class FragmentAnn extends Fragment {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                annList[0] = error.getMessage();
+                annList.add("Request ERROR");
             }
         });
 
