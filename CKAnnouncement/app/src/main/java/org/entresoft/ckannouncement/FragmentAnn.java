@@ -12,8 +12,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
 
 public class FragmentAnn extends Fragment {
 
@@ -39,22 +42,21 @@ public class FragmentAnn extends Fragment {
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         final TextView mTextView = (TextView) getActivity().findViewById(R.id.bkMsg);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET,"http://www.google.com",new Response.Listener<String>() {
-
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://twcl.ck.tp.edu.tw/api/announce", null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        mTextView.setText(response.toString());
+                    }
+                }, new Response.ErrorListener() {
             @Override
-            public void onResponse(String response) {
-                mTextView.setText("Response is: "+ response.substring(0,300));
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError arg0) {
-                mTextView.setText("Error Response");
+            public void onErrorResponse(VolleyError error) {
+                mTextView.setText(error.getMessage());
             }
         });
 
         // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        queue.add(jsonObjectRequest);
 
     }
 }
