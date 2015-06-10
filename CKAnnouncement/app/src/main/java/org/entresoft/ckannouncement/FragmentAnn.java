@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -16,6 +18,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class FragmentAnn extends Fragment {
@@ -37,26 +41,41 @@ public class FragmentAnn extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         /**
-         * Making String Request.
+         * Making Request.
          */
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        final TextView mTextView = (TextView) getActivity().findViewById(R.id.bkMsg);
+        ListView mListView = (ListView) getActivity().findViewById(R.id.annListView);
+        final String[] annList = {};
+        ArrayAdapter<String> listAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, annList);
+        // Refresh
+        mListView.setAdapter(listAdapter);
+
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://twcl.ck.tp.edu.tw/api/announce", null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        mTextView.setText(response.toString());
+                        try {
+                            JSONArray jArray = response.getJSONArray("anns");
+                            for (int i = 0 ; i < jArray.length() ; i++) {
+                                annList[i] = jArray.getJSONObject(i).toString();
+                                // Pulling items from the array
+                            }
+
+                        } catch (JSONException e) {
+                            // Oops
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mTextView.setText(error.getMessage());
+                annList[0] = error.getMessage();
             }
         });
 
         // Add the request to the RequestQueue.
         queue.add(jsonObjectRequest);
+        mListView.setAdapter(listAdapter);
 
     }
 }
