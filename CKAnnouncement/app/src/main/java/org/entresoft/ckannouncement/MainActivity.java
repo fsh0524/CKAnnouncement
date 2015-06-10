@@ -46,28 +46,7 @@ public class MainActivity extends ActionBarActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
 
-        /**
-         * Making String Request.
-         */
-        RequestQueue queue = Volley.newRequestQueue(this);
-        final TextView mTextView = (TextView) findViewById(R.id.bkMsg);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET,"http://www.google.com",new Response.Listener<String>() {
-
-            @Override
-            public void onResponse(String response) {
-                mTextView.setText("Response is: "+ response.substring(0,300));
-            }
-        }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError arg0) {
-                mTextView.setText("Error Response");
-            }
-        });
-
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
 
     }
 
