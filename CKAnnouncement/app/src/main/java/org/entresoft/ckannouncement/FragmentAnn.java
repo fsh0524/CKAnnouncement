@@ -1,6 +1,8 @@
 package org.entresoft.ckannouncement;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,9 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -22,8 +24,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Time;
 import java.util.ArrayList;
+
+import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.header.MaterialHeader;
+import in.srain.cube.views.ptr.header.MaterialProgressDrawable;
+import in.srain.cube.views.ptr.header.StoreHouseHeader;
 
 public class FragmentAnn extends Fragment {
 
@@ -58,6 +65,21 @@ public class FragmentAnn extends Fragment {
         mDialog.setMessage("少女祈禱中...");
         mDialog.show();
 
+        /**
+         * Ptr Settings
+         */
+        final PtrFrameLayout mPtr = (PtrFrameLayout) getActivity().findViewById(R.id.mPtr);
+        final MaterialHeader header = new MaterialHeader(getActivity());
+        int[] colors = getResources().getIntArray(R.array.google_colors);
+        header.setColorSchemeColors(colors);
+        header.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));
+        header.setPadding(0, dp2px(getActivity(), 15), 0, dp2px(getActivity(), 10));
+        header.setPtrFrameLayout(mPtr);
+        mPtr.setHeaderView(header);
+        mPtr.addPtrUIHandler(header);
+
+
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest("http://twcl.ck.tp.edu.tw/api/announce", null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -87,6 +109,10 @@ public class FragmentAnn extends Fragment {
         // Add the request to the RequestQueue.
         queue.add(jsonObjectRequest);
 
+    }
 
+    public static int dp2px(Context context, float dpValue) {
+        final float scale =context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 }
