@@ -58,6 +58,7 @@ public class FragmentAnn extends Fragment {
         final ArrayList<String> annList = new ArrayList<String>();
         final ArrayAdapter<String> listAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, annList);
         // Refresh
+        annList.add("Geez! Nothing Here!");
         mListView.setAdapter(listAdapter);
 
         final ProgressDialog mDialog = new ProgressDialog(getActivity()) ;
@@ -68,7 +69,7 @@ public class FragmentAnn extends Fragment {
         /**
          * Ptr Settings
          */
-        final PtrFrameLayout mPtr = (PtrFrameLayout) getActivity().findViewById(R.id.mPtr);
+        PtrFrameLayout mPtr = (PtrFrameLayout) getActivity().findViewById(R.id.mPtr);
         final MaterialHeader header = new MaterialHeader(getActivity());
         int[] colors = getResources().getIntArray(R.array.google_colors);
         header.setColorSchemeColors(colors);
