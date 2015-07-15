@@ -2,15 +2,18 @@ package org.entresoft.ckannouncement;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -25,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -56,9 +60,9 @@ public class FragmentAnn extends Fragment {
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         final ListView mListView = (ListView) getActivity().findViewById(R.id.annListView);
         final ArrayList<String> annList = new ArrayList<String>();
+        final ArrayList<Integer> AnnIdList = new ArrayList<Integer>();
         final ArrayAdapter<String> listAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, annList);
         // Refresh
-        annList.add("Geez! Nothing Here!");
         mListView.setAdapter(listAdapter);
 
         final ProgressDialog mDialog = new ProgressDialog(getActivity()) ;
@@ -90,6 +94,7 @@ public class FragmentAnn extends Fragment {
                             JSONArray jArray = response.getJSONArray("anns");
                             for (int i = 0 ; i < jArray.length() ; i++) {
                                 annList.add(jArray.getJSONObject(i).getString("title"));
+                                AnnIdList.add(jArray.getJSONObject(i).getInt("id"));
                                 Log.d("TAG", "jizzzzzzzzzz" + i);
                                 mListView.setAdapter(listAdapter);
                                 // Pulling items from the array
@@ -110,6 +115,14 @@ public class FragmentAnn extends Fragment {
         // Add the request to the RequestQueue.
         queue.add(jsonObjectRequest);
 
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(getActivity(), AnnDetailActivity.class)
+                        .putExtra(Intent.EXTRA_TEXT,  AnnIdList.get(position).toString());
+                startActivity(intent);
+            }
+        });
     }
 
     public static int dp2px(Context context, float dpValue) {
